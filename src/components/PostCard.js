@@ -1,9 +1,15 @@
 import { Card, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiFillCheckCircle, AiFillEdit, AiFillMessage } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { deletePost, upvotePost, unUpvotePost, updatePost } from "../api/posts";
+import {
+  deletePost,
+  upvotePost,
+  unUpvotePost,
+  downvotePost,
+  unDownvotePost,
+} from "../api/posts";
 import { isLoggedIn } from "../helpers/authHelper";
 import ContentDetails from "./ContentDetails";
 
@@ -12,12 +18,12 @@ import PostContentBox from "./PostContentBox";
 import HorizontalStack from "./HorizontalStack";
 
 import {} from "react-icons/ai";
-import ContentUpdateEditor from "./ContentUpdateEditor";
 import Markdown from "./Markdown";
 
 import "./postCard.css";
 import { MdCancel } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
+import PostUpdateEditor from "./PostUpdateEditor";
 
 const PostCard = (props) => {
   const { preview, removePost } = props;
@@ -34,6 +40,8 @@ const PostCard = (props) => {
   const [confirm, setConfirm] = useState(false);
   const [post, setPost] = useState(postData);
   const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
+  const [downvoteCount, setDownvoteCount] = useState(post.downvoteCount);
+  const [reloadPage, setReloadPage] = useState(false);
 
   let maxHeight = null;
   if (preview === "primary") {
@@ -63,22 +71,35 @@ const PostCard = (props) => {
     setEditing(!editing);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const content = e.target.content.value;
-    await updatePost(post._id, isLoggedIn(), { content });
-    setPost({ ...post, content, edited: true });
+  const handleEditorClose = () => {
     setEditing(false);
+    setReloadPage(true);
   };
 
-  const handleLike = async (liked) => {
-    if (liked) {
+  useEffect(() => {
+    if (reloadPage) {
+      setReloadPage(false);
+      window.location.reload();
+    }
+  }, [reloadPage]);
+
+  const handleUpvoted = async (upvoted) => {
+    if (upvoted) {
       setUpvoteCount(upvoteCount + 1);
       await upvotePost(post._id, user);
     } else {
       setUpvoteCount(upvoteCount - 1);
       await unUpvotePost(post._id, user);
+    }
+  };
+
+  const handleDownvoted = async (downvoted) => {
+    if (downvoted) {
+      setDownvoteCount(downvoteCount + 1);
+      await downvotePost(post._id, user);
+    } else {
+      setDownvoteCount(downvoteCount - 1);
+      await unDownvotePost(post._id, user);
     }
   };
 
@@ -98,8 +119,11 @@ const PostCard = (props) => {
           >
             <UpvoteBox
               upvoteCount={upvoteCount}
-              liked={post.liked}
-              onLike={handleLike}
+              upvoted={post.upvoted}
+              onUpvote={handleUpvoted}
+              downvoteCount={downvoteCount}
+              downvoted={post.downvoted}
+              onDownvote={handleDownvoted}
             />
           </Stack>
           <PostContentBox clickable={preview} post={post} editing={editing}>
@@ -141,21 +165,24 @@ const PostCard = (props) => {
                   )}
               </Box>
             </HorizontalStack>
-
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{ overflow: "hidden", mt: 1, maxHeight: 125 }}
-              className="title"
-            >
-              {post.title}
-            </Typography>
-
+            {!editing && (
+              <Typography
+                variant="h5"
+                gutterBottom
+                sx={{ overflow: "hidden", mt: 1, maxHeight: 125 }}
+                className="title"
+              >
+                {post.title}
+              </Typography>
+            )}
             {preview !== "secondary" &&
               (editing ? (
-                <ContentUpdateEditor
-                  handleSubmit={handleSubmit}
-                  originalContent={post.content}
+                <PostUpdateEditor
+                  title={post.title}
+                  category={post.category}
+                  content={post.content}
+                  postId={post._id}
+                  onClose={handleEditorClose}
                 />
               ) : (
                 <Box
@@ -166,7 +193,6 @@ const PostCard = (props) => {
                   <Markdown content={post.content} />
                 </Box>
               ))}
-
             <HorizontalStack sx={{ mt: 1 }}>
               <AiFillMessage />
               <Typography

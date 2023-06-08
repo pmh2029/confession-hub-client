@@ -41,13 +41,18 @@ const Comment = (props) => {
 
     const content = e.target.content.value;
 
-    await updateComment(comment._id, user, { content });
+    const updatedComment = await updateComment(comment._id, user, { content });
 
-    const newCommentData = { ...comment, content, edited: true };
+    const newCommentData = {
+      ...comment,
+      content: updatedComment.content,
+      edited: true,
+    };
 
     setComment(newCommentData);
 
     editComment(newCommentData);
+    console.log(newCommentData);
 
     setEditing(false);
   };
@@ -158,6 +163,7 @@ const Comment = (props) => {
               <ContentUpdateEditor
                 handleSubmit={handleSubmit}
                 originalContent={comment.content}
+                comment={comment}
               />
             )}
 
