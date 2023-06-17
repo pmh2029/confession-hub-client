@@ -1,12 +1,8 @@
 import { BASE_URL } from "../config";
 
-const getAllCategories = async (user) => {
+const getAllCategories = async () => {
   try {
-    const res = await fetch(BASE_URL + "api/categories", {
-      headers: {
-        "x-access-token": user.token,
-      },
-    });
+    const res = await fetch(BASE_URL + "api/categories");
     return await res.json();
   } catch (err) {
     console.log(err);

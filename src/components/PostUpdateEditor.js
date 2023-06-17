@@ -72,7 +72,7 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
     setLoading(true);
     const body = {
       title: formData.title,
-      category: selectCategory,
+      category: selectCategory || categoryName,
       content: formData.content,
     };
     const data = await updatePost(postId, isLoggedIn(), body);

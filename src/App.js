@@ -19,6 +19,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import SearchView from "./views/SearchView";
 import MessengerView from "./views/MessengerView";
 import LoginView from "./views/LoginView";
+import PostCategoryView from "./views/PostCategoryView";
 
 import { initiateSocketConnection } from "./helpers/socketHelper";
 
@@ -52,6 +53,7 @@ function App() {
           <Route path="/users/:id" element={<ProfileView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
+          <Route path="/posts/categories/:id" element={<PostCategoryView />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -1,4 +1,11 @@
-import { Card, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Card,
+  IconButton,
+  Link,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
 import { AiFillCheckCircle, AiFillEdit, AiFillMessage } from "react-icons/ai";
@@ -24,6 +31,7 @@ import "./postCard.css";
 import { MdCancel } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
 import PostUpdateEditor from "./PostUpdateEditor";
+import { getAllCategories } from "../api/categories";
 
 const PostCard = (props) => {
   const { preview, removePost } = props;
@@ -42,6 +50,7 @@ const PostCard = (props) => {
   const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
   const [downvoteCount, setDownvoteCount] = useState(post.downvoteCount);
   const [reloadPage, setReloadPage] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   let maxHeight = null;
   if (preview === "primary") {
@@ -103,6 +112,19 @@ const PostCard = (props) => {
     }
   };
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories(user);
+        setCategories(response);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <Card sx={{ padding: 0 }} className="post-card">
       <Box className={preview}>
@@ -130,7 +152,7 @@ const PostCard = (props) => {
             <HorizontalStack justifyContent="space-between">
               <ContentDetails
                 username={post.poster.username}
-                createdAt={post.createdAt}
+                createdAt={post.updatedAt}
                 edited={post.edited}
                 preview={preview === "secondary"}
               />
@@ -167,14 +189,31 @@ const PostCard = (props) => {
             </HorizontalStack>
             {!editing && (
               <Typography
-                variant="h5"
+                variant="h4"
                 gutterBottom
-                sx={{ overflow: "hidden", mt: 1, maxHeight: 125 }}
+                sx={{
+                  overflow: "hidden",
+                  mt: 1,
+                  maxHeight: 125,
+                }}
                 className="title"
               >
                 {post.title}
               </Typography>
             )}
+            <Typography
+              sx={{ mt: 1, justifyContent: "space-between", display: "flex" }}
+            >
+              <Link
+                href={`http://localhost:3000/posts/${post._id}`}
+                target="_blank"
+              >
+                #cfs{post.postNumber}
+              </Link>
+              <Link href={`http://localhost:3000/posts/categories/${post.category}`}>
+                {post.category.categoryName}
+              </Link>
+            </Typography>
             {preview !== "secondary" &&
               (editing ? (
                 <PostUpdateEditor
@@ -189,6 +228,7 @@ const PostCard = (props) => {
                   maxHeight={maxHeight}
                   overflow="hidden"
                   className="content"
+                  sx={{ mt: 1 }}
                 >
                   <Markdown content={post.content} />
                 </Box>
