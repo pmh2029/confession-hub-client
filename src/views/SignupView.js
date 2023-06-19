@@ -81,7 +81,7 @@ const SignupView = () => {
             Confession Hub
           </Link>
         </Typography>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h4" color="rgba(0, 0, 0, 0.6)" gutterBottom>
           Sign Up
         </Typography>
         <Typography color="text.secondary">

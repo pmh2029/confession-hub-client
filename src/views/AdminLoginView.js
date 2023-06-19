@@ -2,11 +2,11 @@ import { Button, Container, Stack, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../api/users";
+import { adminLogin } from "../api/users";
 import ErrorAlert from "../components/ErrorAlert";
 import { loginUser } from "../helpers/authHelper";
 
-const LoginView = () => {
+const AdminLoginView = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,12 +23,12 @@ const LoginView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = await login(formData);
+    const data = await adminLogin(formData);
     if (data.error) {
       setServerError(data.error);
     } else {
       loginUser(data);
-      navigate("/");
+      navigate("/admin");
     }
   };
 
@@ -45,14 +45,9 @@ const LoginView = () => {
           </Link>
         </Typography>
         <Typography variant="h4" color="rgba(0, 0, 0, 0.6)" gutterBottom>
-          Login
+          Admin Login
         </Typography>
-        <Typography color="text.secondary">
-          Don't have an account yet?{" "}
-          <Link to="/signup" style={{ color: "#1976d2" }}>
-            Sign Up
-          </Link>
-        </Typography>
+
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
             label="Email Address"
@@ -86,4 +81,4 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+export default AdminLoginView;

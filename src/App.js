@@ -22,6 +22,9 @@ import LoginView from "./views/LoginView";
 import PostCategoryView from "./views/PostCategoryView";
 
 import { initiateSocketConnection } from "./helpers/socketHelper";
+import AdminLoginView from "./views/AdminLoginView";
+import AdminView from "./views/AdminView";
+import PrivateRouteAdmin from "./components/PrivateRouteAdmin";
 
 function App() {
   initiateSocketConnection();
@@ -54,6 +57,15 @@ function App() {
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
           <Route path="/posts/categories/:id" element={<PostCategoryView />} />
+          <Route path="/admin/login" element={<AdminLoginView />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRouteAdmin>
+                <AdminView />
+              </PrivateRouteAdmin>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

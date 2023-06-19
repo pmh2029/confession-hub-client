@@ -69,4 +69,20 @@ const updateUser = async (user, data) => {
   }
 };
 
-export { signup, login, getUser, getRandomUsers, updateUser };
+const adminLogin = async (user) => {
+  try {
+    const res = await fetch(BASE_URL + "api/users/admin/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    return await res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { signup, login, getUser, getRandomUsers, updateUser, adminLogin };
