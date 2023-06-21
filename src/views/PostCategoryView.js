@@ -25,14 +25,14 @@ const PostCategoryView = () => {
     if (data.error) {
       setError(data.error);
     } else {
-      setPosts(data);
+      setPosts(data.posts);
     }
     setLoading(false);
   };
 
   useEffect(() => {
     fetchPostsByCategory();
-  }, [params.id]);
+  }, []);
 
   return (
     <Container>
