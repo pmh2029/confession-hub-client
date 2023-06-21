@@ -3,37 +3,41 @@ import {
   MenuUnfoldOutlined,
   UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, Typography, theme } from "antd";
-import Title from "antd/es/typography/Title";
+import { Button, Layout, Menu, theme } from "antd";
 import { useState } from "react";
+import AllUserView from "./AllUserView";
+import { logoutUser } from "../helpers/authHelper";
 import { useNavigate } from "react-router-dom";
-import PostView from "./PostView";
+import { BiCategoryAlt } from "react-icons/bi";
+import AllCategoryView from "./AllCategoryView";
+
 const { Header, Sider, Content } = Layout;
 const AdminView = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1"); // Thêm trạng thái cho selectedKey
-  const navigate = useNavigate();
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const handleClick = () => {
-    navigate("/");
-  };
-
   const handleMenuClick = ({ key }) => {
     setSelectedKey(key); // Cập nhật selectedKey khi nhấp vào menu item
+  };
+
+  const handleLogout = async (e) => {
+    logoutUser();
+    navigate("/admin/login");
   };
 
   const renderContent = () => {
     switch (selectedKey) {
       case "1":
-        return <PostView />;
+        return <AllUserView />;
       case "2":
-        return <div>Nội dung cho nav 2</div>;
+        return <AllCategoryView />;
       case "3":
         return <div>Nội dung cho nav 3</div>;
       default:
@@ -44,11 +48,6 @@ const AdminView = () => {
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        {/* <Typography>
-          <Title level={3} code={true} style={{color: "rgba(0, 0, 0, 0.6)"}}>
-            Confession Hub
-          </Title>
-        </Typography> */}
         <Menu
           theme="dark"
           mode="inline"
@@ -59,8 +58,6 @@ const AdminView = () => {
             {
               label: "Confession Hub",
               title: "Confession Hub",
-              // disabled: true,
-              // style: { color: "rgba(0,0,0)" },
             },
             {
               disabled: true,
@@ -68,12 +65,12 @@ const AdminView = () => {
             {
               key: "1",
               icon: <UserOutlined />,
-              label: "nav 1",
+              label: "User",
             },
             {
               key: "2",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
+              icon: <BiCategoryAlt />,
+              label: "Category",
             },
             {
               key: "3",
@@ -88,6 +85,8 @@ const AdminView = () => {
           style={{
             padding: 0,
             background: colorBgContainer,
+            justifyContent: "space-between",
+            display: "flex",
           }}
         >
           <Button
@@ -100,6 +99,20 @@ const AdminView = () => {
               height: 64,
             }}
           />
+          <div>
+            Admin
+            <Button
+              type="text"
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+              style={{
+                fontSize: "16px",
+                height: 64,
+              }}
+            >
+              Logout
+            </Button>
+          </div>
         </Header>
         <Content
           style={{

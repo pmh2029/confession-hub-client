@@ -152,7 +152,8 @@ const PostCard = (props) => {
             <HorizontalStack justifyContent="space-between">
               <ContentDetails
                 username={post.poster.username}
-                createdAt={post.updatedAt}
+                createdAt={post.createdAt}
+                editedAt={post.editedAt}
                 edited={post.edited}
                 preview={preview === "secondary"}
               />
@@ -210,7 +211,9 @@ const PostCard = (props) => {
               >
                 #cfs{post.postNumber}
               </Link>
-              <Link href={`http://localhost:3000/posts/categories/${post.category}`}>
+              <Link
+                href={`http://localhost:3000/posts/categories/${post.category}`}
+              >
                 {post.category.categoryName}
               </Link>
             </Typography>

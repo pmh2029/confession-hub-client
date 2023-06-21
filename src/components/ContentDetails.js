@@ -5,7 +5,7 @@ import Moment from "react-moment";
 import UserAvatar from "./UserAvatar";
 import { Link } from "react-router-dom";
 
-const ContentDetails = ({ username, createdAt, edited, preview }) => {
+const ContentDetails = ({ username, createdAt, edited, preview, editedAt }) => {
   return (
     <HorizontalStack sx={{}}>
       <UserAvatar width={30} height={30} username={username} />
@@ -23,7 +23,16 @@ const ContentDetails = ({ username, createdAt, edited, preview }) => {
         {!preview && (
           <>
             {" "}
-            · <Moment fromNow>{createdAt}</Moment> {edited && <>(Edited)</>}
+            ·{" "}
+            {edited ? (
+              <>
+                <Moment fromNow>{editedAt}</Moment> <>(Edited)</>
+              </>
+            ) : (
+              <>
+                <Moment fromNow>{createdAt}</Moment>
+              </>
+            )}
           </>
         )}
       </Typography>

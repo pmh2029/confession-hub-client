@@ -102,6 +102,7 @@ const Comment = (props) => {
                 username={comment.commenter.username}
                 createdAt={comment.createdAt}
                 edited={comment.edited}
+                editedAt={comment.editedAt}
               />
 
               <IconButton
