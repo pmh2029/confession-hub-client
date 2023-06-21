@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { monokaiSublime } from "reacgt-syntax-highlighter/dist/esm/styles/hljs";
+import { monokaiSublime } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
 import "./markdown.css";
