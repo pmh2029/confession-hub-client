@@ -13,25 +13,32 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import { updatePost } from "../api/posts";
+import { getAllPosts, getPost, updatePost } from "../api/posts";
 import ErrorAlert from "./ErrorAlert";
 import { getAllCategories, getCategory } from "../api/categories";
 import { isLoggedIn } from "../helpers/authHelper";
 
-const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
+const PostUpdateEditor = ({
+  postId,
+  title,
+  category,
+  content,
+  onClose,
+  onUpdatePost,
+}) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
-  const [categoryName, setCategoryName] = useState("");
   const user = isLoggedIn();
+  const query = { sortBy: "-createdAt" };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await getAllCategories(user);
-        const categories = response.map((category) => category.categoryName);
+        const categories = response.map((category) => category.categoryName.trim());
         setCategories(categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -40,22 +47,9 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const fetchCategoryName = async () => {
-      try {
-        const response = await getCategory(user, category);
-        const categoryName = response.categoryName;
-        setCategoryName(categoryName);
-      } catch (err) {
-        console.error("Error fetching category:", err);
-      }
-    };
-    fetchCategoryName();
-  }, [category, user]);
-
   const [formData, setFormData] = useState({
     title: title,
-    category: "",
+    category: category,
     content: content,
     postId: postId,
   });
@@ -72,7 +66,7 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
     setLoading(true);
     const body = {
       title: formData.title,
-      category: selectCategory || categoryName,
+      category: formData.category,
       content: formData.content,
     };
     const data = await updatePost(postId, isLoggedIn(), body);
@@ -80,7 +74,9 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
     if (data && data.error) {
       setServerError(data.error);
     } else {
-      onClose(); // Đóng PostUpdateEditor sau khi submit thành công
+      const post = await getPost(data._id, isLoggedIn())
+      onClose();
+      onUpdatePost(post);
       navigate("/");
     }
   };
@@ -104,15 +100,6 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
   const theme = useTheme();
   const [selectCategory, setSelectCategory] = useState("");
 
-  function getStyles(category, selectCategory, theme) {
-    return {
-      fontWeight:
-        selectCategory === category
-          ? theme.typography.fontWeightMedium
-          : theme.typography.fontWeightRegular,
-    };
-  }
-
   const handleChipChange = (event) => {
     const selectedCategory = event.target.value;
     setSelectCategory(selectedCategory);
@@ -120,8 +107,6 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
       ...prevFormData,
       category: selectedCategory,
     }));
-
-    console.log(selectedCategory);
   };
 
   return (
@@ -143,7 +128,7 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
           <Select
             labelId="demo-single-chip-label"
             id="demo-single-chip"
-            value={formData.category || categoryName}
+            value={formData.category}
             onChange={handleChipChange}
             input={
               <OutlinedInput
@@ -159,15 +144,15 @@ const PostUpdateEditor = ({ postId, title, category, content, onClose }) => {
             )}
             MenuProps={MenuProps}
           >
-            {categories.map((category) => (
-              <MenuItem
-                key={category}
-                value={category}
-                style={getStyles(category, selectCategory, theme)}
-              >
-                {category}
-              </MenuItem>
-            ))}
+            {categories &&
+              categories.map((category) => (
+                <MenuItem
+                  key={category}
+                  value={category}
+                >
+                  {category}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
         <TextField
