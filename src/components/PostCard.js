@@ -49,7 +49,6 @@ const PostCard = (props) => {
   const [post, setPost] = useState(postData);
   const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
   const [downvoteCount, setDownvoteCount] = useState(post.downvoteCount);
-  const [reloadPage, setReloadPage] = useState(false);
   const [categories, setCategories] = useState([]);
 
   let maxHeight = null;
@@ -82,15 +81,7 @@ const PostCard = (props) => {
 
   const handleEditorClose = () => {
     setEditing(false);
-    setReloadPage(true);
   };
-
-  useEffect(() => {
-    if (reloadPage) {
-      setReloadPage(false);
-      window.location.reload();
-    }
-  }, [reloadPage]);
 
   const handleUpvoted = async (upvoted) => {
     if (upvoted) {
@@ -124,6 +115,11 @@ const PostCard = (props) => {
 
     fetchCategories();
   }, []);
+
+  const handleUpdatePost = (updatedPost) => {
+    setPost(updatedPost); // Cập nhật dữ liệu bài đăng
+    setEditing(false); // Tắt chế độ chỉnh sửa
+  };
 
   return (
     <Card sx={{ padding: 0 }} className="post-card">
@@ -212,7 +208,7 @@ const PostCard = (props) => {
                 #cfs{post.postNumber}
               </Link>
               <Link
-                href={`http://localhost:3000/posts/categories/${post.category}`}
+                href={`http://localhost:3000/posts/categories/${post.category._id}`}
               >
                 {post.category.categoryName}
               </Link>
@@ -221,10 +217,11 @@ const PostCard = (props) => {
               (editing ? (
                 <PostUpdateEditor
                   title={post.title}
-                  category={post.category}
+                  category={post.category.categoryName}
                   content={post.content}
                   postId={post._id}
                   onClose={handleEditorClose}
+                  onUpdatePost={handleUpdatePost}
                 />
               ) : (
                 <Box
