@@ -202,13 +202,13 @@ const PostCard = (props) => {
               sx={{ mt: 1, justifyContent: "space-between", display: "flex" }}
             >
               <Link
-                href={`http://localhost:3000/posts/${post._id}`}
+                href={`https://confession-hub-client.vercel.app/posts/${post._id}`}
                 target="_blank"
               >
                 #cfs{post.postNumber}
               </Link>
               <Link
-                href={`http://localhost:3000/posts/categories/${post.category._id}`}
+                href={`https://confession-hub-client.vercel.app/posts/categories/${post.category._id}`}
               >
                 {post.category.categoryName}
               </Link>
