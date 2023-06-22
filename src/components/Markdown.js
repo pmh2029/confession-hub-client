@@ -39,18 +39,19 @@ const Markdown = ({ content }) => {
           ),
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
-            return !inline && match ? (
+            const language = match ? match[1] : "js";
+            return (
               <SyntaxHighlighter
                 {...props}
                 children={String(children).replace(/\n$/, "")}
                 style={monokaiSublime}
-                language={match[1]}
+                showLineNumbers={true}
+                customStyle={{
+                  fontSize: "10px",
+                }}
+                language={language}
                 PreTag="div"
               />
-            ) : (
-              <code {...props} className={className}>
-                {children}
-              </code>
             );
           },
           p: ({ node, ...props }) => (
