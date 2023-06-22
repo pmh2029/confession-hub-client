@@ -71,6 +71,8 @@ const Messages = (props) => {
   useEffect(() => {
     if (messages) {
       scrollToBottom();
+      // Tin nhắn đã được gửi hoặc nhận thành công, đặt lại giá trị loading thành false
+      setLoading(false);
     }
   }, [messages]);
 
@@ -96,14 +98,22 @@ const Messages = (props) => {
 
     setMessages(newMessages);
 
-    await sendMessage(user, newMessage, conversation.recipient._id);
+    try {
+      await sendMessage(user, newMessage, conversation.recipient._id);
 
-    socket.emit(
-      "send-message",
-      conversation.recipient._id,
-      user.username,
-      content
-    );
+      // Gửi tin nhắn thành công, đặt lại giá trị loading thành true
+      setLoading(true);
+
+      socket.emit(
+        "send-message",
+        conversation.recipient._id,
+        user.username,
+        content
+      );
+      setLoading(false);
+    } catch (error) {
+      // Xử lý lỗi khi gửi tin nhắn
+    }
   };
 
   const handleReceiveMessage = (senderId, username, content) => {
@@ -148,10 +158,17 @@ const Messages = (props) => {
     }
 
     scrollToBottom();
+    // Nhận tin nhắn thành công, đặt lại giá trị loading thành true
+    setLoading(true);
   };
 
   useEffect(() => {
     socket.on("receive-message", handleReceiveMessage);
+
+    // Cleanup socket listener when component unmounts
+    return () => {
+      socket.off("receive-message", handleReceiveMessage);
+    };
   }, []);
 
   return props.conservant ? (
@@ -205,7 +222,7 @@ const Messages = (props) => {
         </>
       ) : (
         <Stack sx={{ height: "100%" }} justifyContent="center">
-          <Loading />
+          {loading ? <Loading /> : null}
         </Stack>
       )}
     </>
