@@ -14,14 +14,14 @@ const AllUserView = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const res = await getAllUsers();
+    const res = await getAllUsers(admin);
     setGridData(res);
     setLoading(false);
   };
 
   const handleDelete = async (value) => {
     await deleteUser(value._id, admin);
-    const users = await getAllUsers();
+    const users = await getAllUsers(admin);
     setGridData(users);
   };
 
