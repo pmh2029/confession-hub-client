@@ -1,4 +1,5 @@
 import { BASE_URL } from "../config";
+import fetch from "node-fetch";
 
 const getAllUsers = async (admin) => {
   try {

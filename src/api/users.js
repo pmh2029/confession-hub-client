@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { BASE_URL } from "../config";
 
 const signup = async (user) => {
