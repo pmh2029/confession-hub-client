@@ -63,7 +63,14 @@ const AllPostView = () => {
       sorter: (a, b) => a.postNumber - b.postNumber,
       sortOrder: sortedInfo.columnKey === "postNumber" && sortedInfo.order,
       render: (text, record) => (
-        <a href={`http://localhost:3000/posts/${record._id}`} target="_blank" rel="noreferrer"> #cfs{text}</a>
+        <a
+          href={`https://confession-hub-client.vercel.app/posts/${record._id}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {" "}
+          #cfs{text}
+        </a>
       ),
     },
     {
@@ -77,9 +84,10 @@ const AllPostView = () => {
       title: "Category",
       dataIndex: "category",
       align: "center",
-      sorter: (a, b) => a.category.categoryName.localeCompare(b.category.categoryName),
+      sorter: (a, b) =>
+        a.category.categoryName.localeCompare(b.category.categoryName),
       sortOrder: sortedInfo.columnKey === "category" && sortedInfo.order,
-      render: (_, record) => record.category.categoryName
+      render: (_, record) => record.category.categoryName,
     },
     {
       title: "Upvote Count",
@@ -194,9 +202,7 @@ const AllPostView = () => {
 
   const globalSearch = () => {
     filteredData = dataWithKey.filter((value) => {
-      return value.title
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
+      return value.title.toLowerCase().includes(searchText.toLowerCase());
     });
     setGridData(filteredData);
   };

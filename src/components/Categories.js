@@ -57,7 +57,13 @@ const Categories = () => {
       editTable: true,
       sorter: (a, b) => a.categoryName.localeCompare(b.categoryName),
       sortOrder: sortedInfo.columnKey === "categoryName" && sortedInfo.order,
-      render: (text, record) => <a href={`http://localhost:3000/posts/categories/${record._id}`}>{text}</a>
+      render: (text, record) => (
+        <a
+          href={`https://confession-hub-client.vercel.app/posts/categories/${record._id}`}
+        >
+          {text}
+        </a>
+      ),
     },
     {
       title: "Posts",
