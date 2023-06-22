@@ -1,6 +1,6 @@
 import { IconButton, Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AiFillEdit, AiOutlineLine, AiOutlinePlus } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn } from "../helpers/authHelper";
@@ -27,12 +27,20 @@ const Comment = (props) => {
   const user = isLoggedIn();
   const isAuthor = user && user.userId === comment.commenter._id;
   const navigate = useNavigate();
+  const replyInputRef = useRef(null);
 
   const handleSetReplying = () => {
     if (isLoggedIn()) {
       setReplying(!replying);
+      scrollToReplyInput();
     } else {
       navigate("/login");
+    }
+  };
+
+  const scrollToReplyInput = () => {
+    if (replyInputRef.current) {
+      replyInputRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -72,6 +80,12 @@ const Comment = (props) => {
   if (depth % 2 === 1) {
     style.backgroundColor = "white";
   }
+
+  useEffect(() => {
+    if (replying) {
+      scrollToReplyInput();
+    }
+  }, [replying]);
 
   return (
     <Box sx={style}>
@@ -169,7 +183,7 @@ const Comment = (props) => {
             )}
 
             {replying && !minimised && (
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 2 }} ref={replyInputRef}>
                 <CommentEditor
                   comment={comment}
                   addComment={addComment}
