@@ -139,7 +139,9 @@ const PostEditor = () => {
             helperText={errors.title}
           />
           <FormControl sx={{ width: "100%" }}>
-            <InputLabel id="demo-single-chip-label">Category</InputLabel>
+            <InputLabel id="demo-single-chip-label" required={true}>
+              Category
+            </InputLabel>
             <Select
               labelId="demo-single-chip-label"
               id="demo-single-chip"

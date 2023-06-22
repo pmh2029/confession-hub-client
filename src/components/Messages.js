@@ -17,6 +17,7 @@ const Messages = (props) => {
   const user = isLoggedIn();
   const [messages, setMessages] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
 
   const conversationsRef = useRef(props.conversations);
   const conservantRef = useRef(props.conservant);
@@ -71,8 +72,6 @@ const Messages = (props) => {
   useEffect(() => {
     if (messages) {
       scrollToBottom();
-      // Tin nhắn đã được gửi hoặc nhận thành công, đặt lại giá trị loading thành false
-      setLoading(false);
     }
   }, [messages]);
 
@@ -81,6 +80,12 @@ const Messages = (props) => {
   };
 
   const handleSendMessage = async (content) => {
+    if (isSending) {
+      return; // Đang trong quá trình gửi tin nhắn, không làm gì
+    }
+
+    setIsSending(true); // Bắt đầu quá trình gửi tin nhắn
+
     const newMessage = { direction: "from", content };
     const newMessages = [newMessage, ...messages];
 
@@ -101,18 +106,17 @@ const Messages = (props) => {
     try {
       await sendMessage(user, newMessage, conversation.recipient._id);
 
-      // Gửi tin nhắn thành công, đặt lại giá trị loading thành true
-      setLoading(true);
-
       socket.emit(
         "send-message",
         conversation.recipient._id,
         user.username,
         content
       );
-      setLoading(false);
+
+      setIsSending(false); // Gửi tin nhắn thành công, đặt lại giá trị loading thành false
     } catch (error) {
       // Xử lý lỗi khi gửi tin nhắn
+      setIsSending(false);
     }
   };
 
@@ -158,14 +162,10 @@ const Messages = (props) => {
     }
 
     scrollToBottom();
-    // Nhận tin nhắn thành công, đặt lại giá trị loading thành true
-    setLoading(true);
   };
 
   useEffect(() => {
     socket.on("receive-message", handleReceiveMessage);
-
-    // Cleanup socket listener when component unmounts
     return () => {
       socket.off("receive-message", handleReceiveMessage);
     };
@@ -222,7 +222,7 @@ const Messages = (props) => {
         </>
       ) : (
         <Stack sx={{ height: "100%" }} justifyContent="center">
-          {loading ? <Loading /> : null}
+          <Loading />
         </Stack>
       )}
     </>
