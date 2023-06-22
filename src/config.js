@@ -1,3 +1,3 @@
-let BASE_URL = "http://localhost:8080/";
+let BASE_URL = "https://confession-hub.onrender.com/";
 
 export { BASE_URL };
