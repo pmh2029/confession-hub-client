@@ -6,6 +6,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Card, Stack, Typography } from "@mui/material";
 import HorizontalStack from "./HorizontalStack";
 import { BiCategory } from "react-icons/bi";
+import { CLIENT_URL } from "../config";
 
 const Categories = () => {
   const admin = isLoggedIn();
@@ -58,11 +59,7 @@ const Categories = () => {
       sorter: (a, b) => a.categoryName.localeCompare(b.categoryName),
       sortOrder: sortedInfo.columnKey === "categoryName" && sortedInfo.order,
       render: (text, record) => (
-        <a
-          href={`https://confession-hub-client.vercel.app/posts/categories/${record._id}`}
-        >
-          {text}
-        </a>
+        <a href={CLIENT_URL + `posts/categories/${record._id}`}>{text}</a>
       ),
     },
     {
