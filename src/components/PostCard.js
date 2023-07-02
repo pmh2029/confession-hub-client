@@ -32,6 +32,7 @@ import { MdCancel } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
 import PostUpdateEditor from "./PostUpdateEditor";
 import { getAllCategories } from "../api/categories";
+import { CLIENT_URL } from "../config";
 
 const PostCard = (props) => {
   const { preview, removePost } = props;
@@ -201,15 +202,10 @@ const PostCard = (props) => {
             <Typography
               sx={{ mt: 1, justifyContent: "space-between", display: "flex" }}
             >
-              <Link
-                href={`https://confession-hub-client.vercel.app/posts/${post._id}`}
-                target="_blank"
-              >
+              <Link href={CLIENT_URL + `posts/${post._id}`} target="_blank">
                 #cfs{post.postNumber}
               </Link>
-              <Link
-                href={`https://confession-hub-client.vercel.app/posts/categories/${post.category._id}`}
-              >
+              <Link href={CLIENT_URL + `posts/categories/${post.category._id}`}>
                 {post.category.categoryName}
               </Link>
             </Typography>

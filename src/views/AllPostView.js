@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Table, Popconfirm, Button, Space, Form, Input } from "antd";
-import { deleteCategory } from "../api/admin";
 import { isLoggedIn } from "../helpers/authHelper";
-import { getAllCategories } from "../api/categories";
 import { SearchOutlined } from "@ant-design/icons";
 import { deletePost, getAllPosts } from "../api/posts";
+import { CLIENT_URL } from "../config";
 
 const AllPostView = () => {
   const admin = isLoggedIn();
@@ -64,7 +63,7 @@ const AllPostView = () => {
       sortOrder: sortedInfo.columnKey === "postNumber" && sortedInfo.order,
       render: (text, record) => (
         <a
-          href={`https://confession-hub-client.vercel.app/posts/${record._id}`}
+          href={CLIENT_URL + `posts/${record._id}`}
           target="_blank"
           rel="noreferrer"
         >

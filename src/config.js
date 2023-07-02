@@ -1,3 +1,5 @@
-let BASE_URL = "https://confession-hub.onrender.com/";
+let BASE_URL = "http://localhost:8080/";
 
-export { BASE_URL };
+let CLIENT_URL = "http://localhost:3000/";
+
+export { BASE_URL, CLIENT_URL };
