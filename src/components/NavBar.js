@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logoutUser } from "../helpers/authHelper";
 import UserAvatar from "./UserAvatar";
 import HorizontalStack from "./HorizontalStack";
+import NotificationsDropdown from "./NotificationDropdown";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -87,9 +88,9 @@ const Navbar = () => {
             mr={1}
             color={theme.palette.primary.main}
           >
-            {/* <Link to="/" color="inherit"> */}
-            Confession Hub
-            {/* </Link> */}
+            <Link to="/" style={{ textDecoration: "none", color: "#1976D2" }}>
+              Confession Hub
+            </Link>
           </Typography>
         </HorizontalStack>
 
@@ -120,6 +121,7 @@ const Navbar = () => {
               <IconButton component={Link} to={"/messenger"}>
                 <AiFillMessage />
               </IconButton>
+              <NotificationsDropdown user={user} />
               <IconButton component={Link} to={"/users/" + username}>
                 <UserAvatar width={30} height={30} username={user.username} />
               </IconButton>

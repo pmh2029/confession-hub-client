@@ -63,6 +63,13 @@ const PostBrowser = (props) => {
 
   useEffect(() => {
     fetchPosts();
+    const interval = setInterval(() => {
+      fetchPosts();
+    }, 60000);
+    // Xóa bỏ interval khi component bị unmount
+    return () => {
+      clearInterval(interval);
+    };
   }, [sortBy, effect]);
 
   useEffect(() => {
