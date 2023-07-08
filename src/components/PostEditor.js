@@ -21,6 +21,8 @@ import { getAllCategories } from "../api/categories";
 import { isLoggedIn } from "../helpers/authHelper";
 import HorizontalStack from "./HorizontalStack";
 import UserAvatar from "./UserAvatar";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const PostEditor = () => {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const PostEditor = () => {
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
   const user = isLoggedIn();
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -53,6 +56,10 @@ const PostEditor = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     const errors = validate();
     setErrors(errors);
+  };
+
+  const handleContentChange = (value) => {
+    setFormData({ ...formData, content: value });
   };
 
   const handleSubmit = async (e) => {
@@ -104,6 +111,35 @@ const PostEditor = () => {
       category: selectedCategory,
     }));
   };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+  ];
 
   return (
     <Card>
@@ -172,7 +208,7 @@ const PostEditor = () => {
               ))}
             </Select>
           </FormControl>
-          <TextField
+          {/* <TextField
             fullWidth
             label="Content"
             multiline
@@ -183,6 +219,13 @@ const PostEditor = () => {
             error={errors.content !== undefined}
             helperText={errors.content}
             required
+          /> */}
+          <ReactQuill
+            value={formData.content}
+            onChange={handleContentChange}
+            modules={modules}
+            formats={formats}
+            placeholder="Write your content..."
           />
           <ErrorAlert error={serverError} />
           <Button
