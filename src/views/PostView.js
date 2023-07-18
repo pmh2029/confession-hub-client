@@ -9,8 +9,8 @@ import GridLayout from "../components/GridLayout";
 import Loading from "../components/Loading";
 import PostCard from "../components/PostCard";
 import Comments from "../components/Comments";
-import ErrorAlert from "../components/ErrorAlert";
 import Sidebar from "../components/SideBar";
+import { notification } from "antd";
 
 const PostView = () => {
   const params = useParams();
@@ -24,7 +24,10 @@ const PostView = () => {
     setLoading(true);
     const data = await getPost(params.id, user && user.token);
     if (data.error) {
-      setError(data.error);
+      notification.error({
+        message: "Failed",
+        description: "Post not found",
+      });
     } else {
       setPost(data);
     }
@@ -49,9 +52,7 @@ const PostView = () => {
 
               <Comments />
             </Stack>
-          ) : (
-            error && <ErrorAlert error={error} />
-          )
+          ) : null
         }
         right={<Sidebar />}
       />

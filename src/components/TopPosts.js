@@ -6,14 +6,23 @@ import Loading from "./Loading";
 import PostCard from "./PostCard";
 import HorizontalStack from "./HorizontalStack";
 import { MdLeaderboard } from "react-icons/md";
+import { useParams } from "react-router-dom";
 
 const TopPosts = () => {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState(null);
   const user = isLoggedIn();
+  const params = useParams();
+  let categoryId;
+  let query;
 
   const fetchPosts = async () => {
-    const query = { sortBy: "-upvoteCount" };
+    if (params.category_id) {
+      categoryId = params.category_id;
+      query = { sortBy: "-upvoteCount", categoryId: categoryId };
+    } else {
+      query = { sortBy: "-upvoteCount" };
+    }
 
     const data = await getAllPosts(user && user.token, query);
 

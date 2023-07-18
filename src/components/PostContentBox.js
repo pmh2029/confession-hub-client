@@ -5,7 +5,7 @@ import "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const PostContentBox = (props) => {
-  const { clickable, post, editing } = props;
+  const { clickable, post, editing, openInNewTab } = props;
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -18,7 +18,13 @@ const PostContentBox = (props) => {
             width: "92%",
             "&:hover": { backgroundColor: "grey.50", cursor: "pointer" },
           }}
-          onClick={() => navigate("/posts/" + post._id)}
+          onClick={() => {
+            if (openInNewTab) {
+              window.open(`/posts/${post._id}`, "_blank");
+            } else {
+              window.location.href = `/posts/${post._id}`;
+            }
+          }}
         >
           {props.children}
         </Box>

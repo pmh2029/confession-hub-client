@@ -1,9 +1,9 @@
 import { Button, Container, Stack, TextField, Typography } from "@mui/material";
+import { notification } from "antd";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/users";
-import ErrorAlert from "../components/ErrorAlert";
 import { loginUser } from "../helpers/authHelper";
 
 const LoginView = () => {
@@ -13,9 +13,6 @@ const LoginView = () => {
     email: "",
     password: "",
   });
-
-  const [serverError, setServerError] = useState("");
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -25,9 +22,16 @@ const LoginView = () => {
 
     const data = await login(formData);
     if (data.error) {
-      setServerError(data.error);
+      notification.error({
+        message: "Faild",
+        description: "Failed to login",
+      });
     } else {
       loginUser(data);
+      notification.success({
+        message: "Success",
+        description: "Successfully logged in",
+      });
       navigate("/");
     }
   };
@@ -76,7 +80,6 @@ const LoginView = () => {
             type="password"
           />
 
-          <ErrorAlert error={serverError} />
           <Button type="submit" fullWidth variant="contained" sx={{ my: 2 }}>
             Login
           </Button>

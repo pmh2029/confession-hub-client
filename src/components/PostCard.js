@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Card,
   IconButton,
@@ -7,7 +8,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
 import { AiFillCheckCircle, AiFillEdit, AiFillMessage } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,28 +19,25 @@ import {
 } from "../api/posts";
 import { isLoggedIn } from "../helpers/authHelper";
 import ContentDetails from "./ContentDetails";
-
 import UpvoteBox from "./UpvoteBox";
 import PostContentBox from "./PostContentBox";
 import HorizontalStack from "./HorizontalStack";
-
-import {} from "react-icons/ai";
 import Markdown from "./Markdown";
-
-import "./postCard.css";
 import { MdCancel } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
 import PostUpdateEditor from "./PostUpdateEditor";
 import { getAllCategories } from "../api/categories";
 import { CLIENT_URL } from "../config";
+import { Popconfirm, message } from "antd"; // Import the Popconfirm component from the "antd" library
 
 const PostCard = (props) => {
-  const { preview, removePost } = props;
+  const { preview, removePost, openInNewTab } = props;
   let postData = props.post;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const user = isLoggedIn();
-  const isAuthor = user && user.username === postData.poster.username;
+  const isOwner = user && user.username === postData.poster.username;
+  const isAdmin = user && user.isAdmin;
 
   const theme = useTheme();
   const iconColor = theme.palette.primary.main;
@@ -59,19 +56,40 @@ const PostCard = (props) => {
 
   const handleDeletePost = async (e) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent the default behavior of the delete button (navigation)
 
-    if (!confirm) {
-      setConfirm(true);
-    } else {
-      setLoading(true);
-      await deletePost(post._id, isLoggedIn());
-      setLoading(false);
-      if (preview) {
-        removePost(post);
-      } else {
-        navigate("/");
-      }
-    }
+    showDeleteConfirmation();
+  };
+
+  // Function to show the delete confirmation dialog
+  const showDeleteConfirmation = () => {
+    // Show the confirmation dialog
+    Popconfirm.confirm({
+      title: "Are you sure you want to delete this post?",
+      okText: "Yes",
+      cancelText: "No",
+      onConfirm: async () => {
+        setLoading(true);
+        try {
+          await deletePost(post._id, isLoggedIn());
+          setLoading(false);
+          if (preview) {
+            removePost(post);
+          } else {
+            navigate("/");
+          }
+          message.success("Post deleted successfully!");
+        } catch (error) {
+          setLoading(false);
+          message.error("Failed to delete the post. Please try again.");
+        }
+      },
+      onCancel: (e) => {
+        // Prevent the default behavior of the delete button (navigation) when canceled
+        e.stopPropagation();
+        e.preventDefault();
+      },
+    });
   };
 
   const handleEditPost = async (e) => {
@@ -145,7 +163,12 @@ const PostCard = (props) => {
               onDownvote={handleDownvoted}
             />
           </Stack>
-          <PostContentBox clickable={preview} post={post} editing={editing}>
+          <PostContentBox
+            clickable={preview}
+            post={post}
+            editing={editing}
+            openInNewTab={openInNewTab}
+          >
             <HorizontalStack justifyContent="space-between">
               <ContentDetails
                 username={post.poster.username}
@@ -155,10 +178,9 @@ const PostCard = (props) => {
                 preview={preview === "secondary"}
               />
               <Box>
-                {user &&
-                  (isAuthor || user.isAdmin) &&
-                  preview !== "secondary" && (
-                    <HorizontalStack>
+                {user && (
+                  <>
+                    {isOwner && (
                       <IconButton
                         disabled={loading}
                         size="small"
@@ -170,19 +192,30 @@ const PostCard = (props) => {
                           <AiFillEdit color={iconColor} />
                         )}
                       </IconButton>
-                      <IconButton
+                    )}
+                    {isOwner || isAdmin ? (
+                      // Render the delete button inside the Popconfirm component
+                      <Popconfirm
+                        title="Are you sure you want to delete this post?"
+                        onConfirm={handleDeletePost}
+                        onCancel={() => {}}
+                        okText="Yes"
+                        cancelText="No"
                         disabled={loading}
-                        size="small"
-                        onClick={handleDeletePost}
                       >
-                        {confirm ? (
-                          <AiFillCheckCircle color={theme.palette.error.main} />
-                        ) : (
-                          <BiTrash color={theme.palette.error.main} />
-                        )}
-                      </IconButton>
-                    </HorizontalStack>
-                  )}
+                        <IconButton disabled={loading} size="small">
+                          {confirm ? (
+                            <AiFillCheckCircle
+                              color={theme.palette.error.main}
+                            />
+                          ) : (
+                            <BiTrash color={theme.palette.error.main} />
+                          )}
+                        </IconButton>
+                      </Popconfirm>
+                    ) : null}
+                  </>
+                )}
               </Box>
             </HorizontalStack>
             {!editing && (

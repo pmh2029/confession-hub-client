@@ -25,6 +25,7 @@ const AddCategory = ({ open, onClose, onAddCategory }) => {
         const newCategory = {
           ...values,
           categoryName: values.categoryName,
+          url: values.url.split(",").map((url) => url.trim()),
         };
         await createCategory(newCategory, admin);
         setCategories([newCategory, ...categories]);
@@ -52,6 +53,18 @@ const AddCategory = ({ open, onClose, onAddCategory }) => {
             {
               required: true,
               message: "Please enter a category name",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="url"
+          label="Category Image"
+          rules={[
+            {
+              required: true,
+              message: "Please enter category image url",
             },
           ]}
         >

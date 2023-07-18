@@ -11,8 +11,8 @@ import React, { useState } from "react";
 import { signup } from "../api/users";
 import { loginUser } from "../helpers/authHelper";
 import { useNavigate } from "react-router-dom";
-import ErrorAlert from "../components/ErrorAlert";
 import { isLength, isEmail, contains } from "validator";
+import { notification } from "antd";
 
 const SignupView = () => {
   const navigate = useNavigate();
@@ -38,9 +38,16 @@ const SignupView = () => {
     const data = await signup(formData);
 
     if (data.error) {
-      setServerError(data.error);
+      notification.error({
+        message: "Failed",
+        description: data.error,
+      });
     } else {
       loginUser(data);
+      notification.success({
+        message: "Success",
+        description: "Successfully signed up",
+      });
       navigate("/");
     }
   };
@@ -125,7 +132,6 @@ const SignupView = () => {
             error={errors.password !== undefined}
             helperText={errors.password}
           />
-          <ErrorAlert error={serverError} />
           <Button type="submit" fullWidth variant="contained" sx={{ my: 2 }}>
             Sign Up
           </Button>
