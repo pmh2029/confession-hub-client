@@ -1,4 +1,4 @@
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllPostsByCategory } from "../api/posts";
@@ -8,8 +8,9 @@ import GoBack from "../components/GoBack";
 import GridLayout from "../components/GridLayout";
 import Loading from "../components/Loading";
 import PostCard from "../components/PostCard";
-import ErrorAlert from "../components/ErrorAlert";
 import Sidebar from "../components/SideBar";
+import { getCategory } from "../api/categories";
+import { notification } from "antd";
 
 const PostCategoryView = () => {
   const params = useParams();
@@ -17,13 +18,34 @@ const PostCategoryView = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState(null);
   const user = isLoggedIn();
+
+  const fetchCategory = async () => {
+    setLoading(true);
+    const category = await getCategory(user, params.category_id);
+    if (category.error) {
+      notification.error({
+        message: "Failed",
+        description: "Category not found",
+      });
+    } else {
+      setCategory(category);
+    }
+    setLoading(false);
+  };
 
   const fetchPostsByCategory = async () => {
     setLoading(true);
-    const data = await getAllPostsByCategory(params.id, user && user.token);
+    const data = await getAllPostsByCategory(
+      params.category_id,
+      user && user.token
+    );
     if (data.error) {
-      setError(data.error);
+      notification.error({
+        message: "Failed",
+        description: "Post with category not found",
+      });
     } else {
       setPosts(data.posts);
     }
@@ -31,12 +53,19 @@ const PostCategoryView = () => {
   };
 
   useEffect(() => {
+    fetchCategory();
     fetchPostsByCategory();
   }, []);
 
   return (
     <Container>
       <Navbar />
+      <Typography variant="h1" sx={{ marginBottom: "25px" }}>
+        {category && category.categoryName}
+        <Typography variant="body1" color="initial">
+          Posts about {category && category.categoryName}
+        </Typography>
+      </Typography>
       <GoBack />
       <GridLayout
         left={
@@ -48,9 +77,7 @@ const PostCategoryView = () => {
                 <PostCard post={post} key={post._id} />
               ))}
             </Stack>
-          ) : (
-            error && <ErrorAlert error={error} />
-          )
+          ) : null
         }
         right={<Sidebar />}
       />

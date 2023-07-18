@@ -3,8 +3,8 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { adminLogin } from "../api/users";
-import ErrorAlert from "../components/ErrorAlert";
 import { loginUser } from "../helpers/authHelper";
+import { notification } from "antd";
 
 const AdminLoginView = () => {
   const navigate = useNavigate();
@@ -25,9 +25,16 @@ const AdminLoginView = () => {
 
     const data = await adminLogin(formData);
     if (data.error) {
-      setServerError(data.error);
+      notification.error({
+        message: "Failed",
+        description: "Failed to login",
+      });
     } else {
       loginUser(data);
+      notification.success({
+        message: "Success",
+        description: "Successfully logged in",
+      });
       navigate("/admin");
     }
   };
@@ -71,7 +78,6 @@ const AdminLoginView = () => {
             type="password"
           />
 
-          <ErrorAlert error={serverError} />
           <Button type="submit" fullWidth variant="contained" sx={{ my: 2 }}>
             Login
           </Button>

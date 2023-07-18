@@ -5,7 +5,6 @@ import { getUser, updateUser } from "../api/users";
 import { isLoggedIn } from "../helpers/authHelper";
 import CommentBrowser from "../components/CommentBrowser";
 
-import ErrorAlert from "../components/ErrorAlert";
 import GridLayout from "../components/GridLayout";
 import Loading from "../components/Loading";
 import MobileProfile from "../components/MobileProfile";
@@ -13,6 +12,7 @@ import Navbar from "../components/NavBar";
 import PostBrowser from "../components/PostBrowser";
 import Profile from "../components/Profile";
 import ProfileTabs from "../components/ProfileTabs";
+import { notification } from "antd";
 
 const ProfileView = () => {
   const [loading, setLoading] = useState(true);
@@ -30,7 +30,10 @@ const ProfileView = () => {
     const data = await getUser(params);
     setLoading(false);
     if (data.error) {
-      setError(data.error);
+      notification.error({
+        message: "Failed",
+        description: "User not found",
+      });
     } else {
       setProfile(data);
     }
@@ -115,7 +118,6 @@ const ProfileView = () => {
               ) : (
                 <Loading />
               )}
-              {error && <ErrorAlert error={error} />}
             </Stack>
           </>
         }

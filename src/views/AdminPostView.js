@@ -1,16 +1,15 @@
-import { Button, Card, Stack, Typography, TextField } from "@mui/material";
-import { Box } from "@mui/system";
+import { Button, Input } from "antd";
+import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Card, Stack, Typography, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { getAllPosts, getUserUpvotedPosts } from "../api/posts";
 import { isLoggedIn } from "../helpers/authHelper";
-import CreatePost from "./CreatePost";
-import Loading from "./Loading";
-import PostCard from "./PostCard";
-import SortBySelect from "./SortBySelect";
-import HorizontalStack from "./HorizontalStack";
+import Loading from "../components/Loading";
+import PostCard from "../components/PostCard";
+import SortBySelect from "../components/SortBySelect";
+import HorizontalStack from "../components/HorizontalStack";
 
-const PostBrowser = (props) => {
+const AdminPostView = (props) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -19,11 +18,8 @@ const PostBrowser = (props) => {
   const [count, setCount] = useState(0);
   const user = isLoggedIn();
 
-  const [search] = useSearchParams();
   const [effect, setEffect] = useState(false);
-
-  const searchExists =
-    search && search.get("search") && search.get("search").length > 0;
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -33,13 +29,13 @@ const PostBrowser = (props) => {
     let query = {
       page: newPage,
       sortBy,
+      search: searchQuery,
     };
 
     let data;
 
     if (props.contentType === "posts") {
       if (props.profileUser) query.author = props.profileUser.username;
-      if (searchExists) query.search = search.get("search");
 
       data = await getAllPosts(user && user.token, query);
     } else if (props.contentType === "upvoted") {
@@ -77,7 +73,7 @@ const PostBrowser = (props) => {
     setPage(0);
     setEnd(false);
     setEffect(!effect);
-  }, [search]);
+  }, []);
 
   const handleSortBy = (e) => {
     const newSortName = e.target.value;
@@ -91,6 +87,13 @@ const PostBrowser = (props) => {
     setPage(0);
     setEnd(false);
     setSortBy(newSortBy);
+  };
+
+  const handleSearch = () => {
+    setPosts([]);
+    setPage(0);
+    setEnd(false);
+    setEffect(!effect);
   };
 
   const removePost = (removedPost) => {
@@ -125,7 +128,27 @@ const PostBrowser = (props) => {
       <Stack spacing={2}>
         <Card>
           <HorizontalStack justifyContent="space-between">
-            {props.createPost && <CreatePost />}
+            <Stack direction="row" spacing={1}>
+              <Input
+                placeholder="Type keywords..."
+                type="text"
+                size="large"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+              />
+              <Button
+                size="large"
+                icon={<SearchOutlined />}
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+            </Stack>
             <SortBySelect
               onSortBy={handleSortBy}
               sortBy={sortBy}
@@ -133,17 +156,6 @@ const PostBrowser = (props) => {
             />
           </HorizontalStack>
         </Card>
-
-        {searchExists && (
-          <Box>
-            <Typography variant="h5" gutterBottom>
-              Showing results for "{search.get("search")}"
-            </Typography>
-            <Typography color="text.secondary" variant="span">
-              {count} results found
-            </Typography>
-          </Box>
-        )}
 
         {posts.map((post, i) => (
           <PostCard
@@ -165,8 +177,18 @@ const PostBrowser = (props) => {
                 <>No posts available</>
               )}
             </Typography>
-            <Button variant="text" size="small" onClick={handleBackToTop}>
-              Back to top
+            <Button
+              type="link"
+              size="large"
+              onClick={handleBackToTop}
+              style={{
+                fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                fontWeight: "500px",
+                color: "#1976D2",
+                fontSize: "13px",
+              }}
+            >
+              BACK TO TOP
             </Button>
           </Stack>
         ) : (
@@ -174,11 +196,30 @@ const PostBrowser = (props) => {
           posts &&
           posts.length > 0 && (
             <Stack pt={2} pb={6} alignItems="center" spacing={2}>
-              <Button onClick={fetchPosts} variant="contained">
-                Load more
+              <Button
+                onClick={fetchPosts}
+                type="link"
+                style={{
+                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                  fontWeight: "500px",
+                  color: "#1976D2",
+                  fontSize: "13px",
+                }}
+              >
+                LOAD MORE
               </Button>
-              <Button variant="text" size="small" onClick={handleBackToTop}>
-                Back to top
+              <Button
+                type="link"
+                size="large"
+                onClick={handleBackToTop}
+                style={{
+                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                  fontWeight: "500px",
+                  color: "#1976D2",
+                  fontSize: "13px",
+                }}
+              >
+                BACK TO TOP
               </Button>
             </Stack>
           )
@@ -188,4 +229,4 @@ const PostBrowser = (props) => {
   );
 };
 
-export default PostBrowser;
+export default AdminPostView;

@@ -56,7 +56,10 @@ function App() {
           <Route path="/users/:id" element={<ProfileView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
-          <Route path="/posts/categories/:id" element={<PostCategoryView />} />
+          <Route
+            path="/posts/categories/:category_id"
+            element={<PostCategoryView />}
+          />
           <Route path="/admin/login" element={<AdminLoginView />} />
           <Route
             path="/admin"

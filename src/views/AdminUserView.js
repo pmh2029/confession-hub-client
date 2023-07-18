@@ -3,7 +3,7 @@ import { Table, Popconfirm, Button, Space } from "antd";
 import { getAllUsers, deleteUser } from "../api/admin";
 import { isLoggedIn } from "../helpers/authHelper";
 
-const AllUserView = () => {
+const AdminUserView = () => {
   const admin = isLoggedIn();
   const [gridData, setGridData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -77,4 +77,4 @@ const AllUserView = () => {
   );
 };
 
-export default AllUserView;
+export default AdminUserView;

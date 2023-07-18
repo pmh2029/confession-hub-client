@@ -8,12 +8,12 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { useState } from "react";
-import AllUserView from "./AllUserView";
+import AdminUserView from "./AdminUserView";
 import { logoutUser } from "../helpers/authHelper";
 import { useNavigate } from "react-router-dom";
 import { BiCategoryAlt } from "react-icons/bi";
-import AllCategoryView from "./AllCategoryView";
-import AllPostView from "./AllPostView";
+import AdminCategoryView from "./AdminCategoryView";
+import AdminPostView from "./AdminPostView";
 
 const { Header, Sider, Content } = Layout;
 const AdminView = () => {
@@ -36,14 +36,16 @@ const AdminView = () => {
 
   const renderContent = () => {
     switch (selectedKey) {
+      case "0":
+        return <AdminPostView contentType="posts" openInNewTab />;
       case "1":
-        return <AllPostView />;
+        return <AdminPostView contentType="posts" openInNewTab />;
       case "2":
-        return <AllUserView />;
+        return <AdminUserView />;
       case "3":
-        return <AllCategoryView />;
-      case "4":
-        return <div>Nội dung cho nav 3</div>;
+        return <AdminCategoryView />;
+      // case "4":
+      //   return <AdminPostView contentType="posts" openInNewTab adminReview/>;
       default:
         return null;
     }
@@ -60,8 +62,10 @@ const AdminView = () => {
           onClick={handleMenuClick} // Xử lý sự kiện khi nhấp vào menu item
           items={[
             {
+              key: "0",
               label: "Confession Hub",
               title: "Confession Hub",
+              // disabled: true,
             },
             {
               disabled: true,
@@ -81,11 +85,11 @@ const AdminView = () => {
               icon: <BiCategoryAlt />,
               label: "Category",
             },
-            {
-              key: "4",
-              icon: <UploadOutlined />,
-              label: "nav 3",
-            },
+            // {
+            //   key: "4",
+            //   icon: <UploadOutlined />,
+            //   label: "Admin Review",
+            // },
           ]}
         />
       </Sider>

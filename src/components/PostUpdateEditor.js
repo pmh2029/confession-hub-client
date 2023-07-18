@@ -14,7 +14,6 @@ import {
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { getAllPosts, getPost, updatePost } from "../api/posts";
-import ErrorAlert from "./ErrorAlert";
 import { getAllCategories, getCategory } from "../api/categories";
 import { isLoggedIn } from "../helpers/authHelper";
 
@@ -38,7 +37,9 @@ const PostUpdateEditor = ({
     const fetchCategories = async () => {
       try {
         const response = await getAllCategories(user);
-        const categories = response.map((category) => category.categoryName.trim());
+        const categories = response.map((category) =>
+          category.categoryName.trim()
+        );
         setCategories(categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -74,7 +75,7 @@ const PostUpdateEditor = ({
     if (data && data.error) {
       setServerError(data.error);
     } else {
-      const post = await getPost(data._id, isLoggedIn())
+      const post = await getPost(data._id, isLoggedIn());
       onClose();
       onUpdatePost(post);
       navigate("/");
@@ -146,10 +147,7 @@ const PostUpdateEditor = ({
           >
             {categories &&
               categories.map((category) => (
-                <MenuItem
-                  key={category}
-                  value={category}
-                >
+                <MenuItem key={category} value={category}>
                   {category}
                 </MenuItem>
               ))}
@@ -168,7 +166,6 @@ const PostUpdateEditor = ({
           helperText={errors.content}
           required
         />
-        <ErrorAlert error={serverError} />
         <Button
           variant="outlined"
           type="submit"

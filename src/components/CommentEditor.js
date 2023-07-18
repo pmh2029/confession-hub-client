@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createComment } from "../api/comments";
 import { isLoggedIn } from "../helpers/authHelper";
-import ErrorAlert from "./ErrorAlert";
 import HorizontalStack from "./HorizontalStack";
+import { notification } from "antd";
 
 const CommentEditor = ({ label, comment, addComment, setReplying }) => {
   const [formData, setFormData] = useState({
@@ -35,7 +35,10 @@ const CommentEditor = ({ label, comment, addComment, setReplying }) => {
     setLoading(false);
 
     if (data.error) {
-      setError(data.error);
+      notification.error({
+        message: "Failed",
+        description: "Failed to comment",
+      });
     } else {
       formData.content = "";
       setReplying && setReplying(false);
@@ -55,7 +58,11 @@ const CommentEditor = ({ label, comment, addComment, setReplying }) => {
             {comment ? <>Reply</> : <>Comment</>}
           </Typography>
           <Typography>
-            <a href="https://commonmark.org/help/" target="_blank" rel="noreferrer">
+            <a
+              href="https://commonmark.org/help/"
+              target="_blank"
+              rel="noreferrer"
+            >
               Markdown Help
             </a>
           </Typography>
@@ -77,7 +84,6 @@ const CommentEditor = ({ label, comment, addComment, setReplying }) => {
             value={formData.content}
           />
 
-          <ErrorAlert error={error} sx={{ my: 4 }} />
           <Button
             variant="outlined"
             type="submit"
