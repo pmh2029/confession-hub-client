@@ -249,7 +249,8 @@ const Comment = (props) => {
   const user = isLoggedIn();
   const isAuthor = user && user.userId === comment.commenter._id;
   console.log(comment)
-  const isPostAuthor = user && user.userId === comment.post.poster._id;
+  console.log(user);
+  const isPostAuthor = user && user.userId === comment.post.poster;
 
   const isAdmin = user && user.isAdmin;
   const navigate = useNavigate();
