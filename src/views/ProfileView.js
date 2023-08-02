@@ -46,7 +46,7 @@ const ProfileView = () => {
 
     await updateUser(user, { biography: content });
 
-    setProfile({ ...profile, user: { ...profile.user, biography: content } });
+    setProfile({ ...profile, user: { ...profile.user, status: content } });
     setEditing(false);
   };
 
