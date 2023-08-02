@@ -71,16 +71,16 @@ const MobileProfile = (props) => {
             {user.status ? (
               <>
                 <Typography textAlign="center" variant="p">
-                  <b>Bio: </b>
+                  <b>Status: </b>
                   {user.status}
                 </Typography>
               </>
             ) : (
               <Typography variant="p">
                 <i>
-                  No bio yet{" "}
+                  No status yet{" "}
                   {currentUser && user._id === currentUser.userId && (
-                    <span>- Tap on the edit icon to add your bio</span>
+                    <span>- Tap on the edit icon to add your status</span>
                   )}
                 </i>
               </Typography>

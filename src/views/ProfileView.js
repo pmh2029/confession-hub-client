@@ -44,7 +44,7 @@ const ProfileView = () => {
 
     const content = e.target.content.value;
 
-    await updateUser(user, { biography: content });
+    await updateUser(user, { status: content });
 
     setProfile({ ...profile, user: { ...profile.user, status: content } });
     setEditing(false);
@@ -66,7 +66,7 @@ const ProfileView = () => {
     let error = "";
 
     if (content.length > 250) {
-      error = "Bio cannot be longer than 250 characters";
+      error = "Status cannot be longer than 250 characters";
     }
 
     return error;
