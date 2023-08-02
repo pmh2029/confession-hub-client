@@ -378,7 +378,7 @@ const Comment = (props) => {
                         <AiFillEdit color={iconColor} />
                       </IconButton>
                     )}
-                    {isAdmin || isPostAuthor ? (
+                    {(isAuthor || isAdmin || isPostAuthor) && (
                       <Popconfirm
                         title="Are you sure you want to delete this comment?"
                         onConfirm={handleDelete}
@@ -389,7 +389,7 @@ const Comment = (props) => {
                           <BiTrash color={theme.palette.error.main} />
                         </IconButton>
                       </Popconfirm>
-                    ) : null}
+                    )}
                   </HorizontalStack>
                 )}
               </HorizontalStack>
