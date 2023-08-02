@@ -1,4 +1,5 @@
-import { IconButton, Typography, useTheme } from "@mui/material";
+//
+import { IconButton, Typography, useTheme, Popconfirm } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState, useRef, useEffect } from "react";
 import { AiFillEdit, AiOutlineLine, AiOutlinePlus } from "react-icons/ai";
@@ -156,13 +157,16 @@ const Comment = (props) => {
                         <AiFillEdit color={iconColor} />
                       )}
                     </IconButton>
-                    <IconButton
-                      variant="text"
-                      size="small"
-                      onClick={handleDelete}
+                    <Popconfirm
+                      title="Are you sure you want to delete this comment?"
+                      onConfirm={handleDelete}
+                      okText="Yes"
+                      cancelText="No"
                     >
-                      <BiTrash color={theme.palette.error.main} />
-                    </IconButton>
+                      <IconButton variant="text" size="small">
+                        <BiTrash color={theme.palette.error.main} />
+                      </IconButton>
+                    </Popconfirm>
                   </HorizontalStack>
                 )}
               </HorizontalStack>
