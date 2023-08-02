@@ -1,8 +1,7 @@
-//
+import React, { useState, useRef, useEffect } from "react";
 import { IconButton, Typography, useTheme } from "@mui/material";
 import { Popconfirm } from "antd";
 import { Box } from "@mui/system";
-import React, { useState, useRef, useEffect } from "react";
 import { AiFillEdit, AiOutlineLine, AiOutlinePlus } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn } from "../helpers/authHelper";
@@ -145,7 +144,7 @@ const Comment = (props) => {
                     <MdCancel color={iconColor} />
                   )}
                 </IconButton>
-                {user && (isAuthor || user.isAdmin) && (
+                {user && isAuthor && (
                   <HorizontalStack spacing={1}>
                     <IconButton
                       variant="text"
