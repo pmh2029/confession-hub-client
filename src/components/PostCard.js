@@ -56,7 +56,6 @@ const PostCard = (props) => {
 
   const handleDeletePost = async (e) => {
     e.stopPropagation();
-    e.preventDefault(); // Prevent the default behavior of the delete button (navigation)
 
     showDeleteConfirmation();
   };
