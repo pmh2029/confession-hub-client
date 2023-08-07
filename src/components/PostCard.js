@@ -56,8 +56,21 @@ const PostCard = (props) => {
 
   const handleDeletePost = async (e) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent the default behavior of the delete button (navigation)
 
-    showDeleteConfirmation();
+    try {
+      await deletePost(post._id, isLoggedIn());
+      setLoading(false);
+      if (preview) {
+        removePost(post);
+      } else {
+        navigate("/");
+      }
+      message.success("Post deleted successfully!");
+    } catch (error) {
+      setLoading(false);
+      message.error("Failed to delete the post. Please try again.");
+    }
   };
 
   // Function to show the delete confirmation dialog
