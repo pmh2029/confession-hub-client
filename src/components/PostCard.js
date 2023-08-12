@@ -254,8 +254,7 @@ const PostCard = (props) => {
                 href={CLIENT_URL + `posts/categories/${post.category._id}`}
                 onClick={(e) => {
                   if (!isLoggedIn()) {
-                    e.preventDefault();
-                    navigate("/login");
+                    navigate(CLIENT_URL + `posts/${post._id}`);
                   }
                 }}
               >
