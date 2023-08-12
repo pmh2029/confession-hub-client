@@ -250,7 +250,13 @@ const PostCard = (props) => {
               <Link href={CLIENT_URL + `posts/${post._id}`} target="_blank">
                 #cfs{post.postNumber}
               </Link>
-              <Link href={CLIENT_URL + `posts/categories/${post.category._id}`}>
+              <Link
+                href={CLIENT_URL + `posts/categories/${post.category._id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/login");
+                }}
+              >
                 {post.category.categoryName}
               </Link>
             </Typography>
