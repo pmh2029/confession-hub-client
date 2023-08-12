@@ -3,12 +3,15 @@ import { Card, Stack, Typography, Input, Divider } from "@mui/material";
 import { BiCategory } from "react-icons/bi";
 import { getAllCategories } from "../api/categories";
 import { CLIENT_URL } from "../config";
+import { Link, useNavigate } from "react-router-dom";
+import { isLoggedIn } from "../helpers/authHelper";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
@@ -67,6 +70,12 @@ const Categories = () => {
               style={{
                 textDecoration: "none",
                 color: "inherit",
+              }}
+              onClick={(e) => {
+                if (!isLoggedIn()) {
+                  e.preventDefault();
+                  navigate("/login");
+                }
               }}
             >
               {category.categoryName}
