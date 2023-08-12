@@ -65,7 +65,7 @@ const PostBrowser = (props) => {
     fetchPosts();
     const interval = setInterval(() => {
       fetchPosts();
-    }, 60000);
+    }, 300000);
     // Xóa bỏ interval khi component bị unmount
     return () => {
       clearInterval(interval);
