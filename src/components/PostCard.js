@@ -251,16 +251,16 @@ const PostCard = (props) => {
                 #cfs{post.postNumber}
               </Link>
               <Link
-                // href={CLIENT_URL + `posts/categories/${post.category._id}`}
-                onClick={(e) => {
-                  if (!isLoggedIn()) {
-                    navigate(CLIENT_URL + `posts/${post._id}`);
-                  } else {
-                    navigate(
-                      CLIENT_URL + `posts/categories/${post.category._id}`
-                    );
-                  }
-                }}
+                href={CLIENT_URL + `posts/categories/${post.category._id}`}
+                // onClick={(e) => {
+                //   if (!isLoggedIn()) {
+                //     navigate(CLIENT_URL + `posts/${post._id}`);
+                //   } else {
+                //     navigate(
+                //       CLIENT_URL + `posts/categories/${post.category._id}`
+                //     );
+                //   }
+                // }}
               >
                 {post.category.categoryName}
               </Link>
